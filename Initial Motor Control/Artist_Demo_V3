@@ -1,0 +1,184 @@
+// double check with tim & francesca
+// how to make less of a jump from end of acceleration to beginning of constant
+
+#include <SoftwareSerial.h>    
+#include <BlynkSimpleStream.h>
+
+SoftwareSerial SwSerial(10, 11); // RX, TX
+
+// authorisation token for blynk app
+char auth[] = "5iCA25psPcDwtnSFWXKdKvwON5A65APz";
+
+// connect to the GeckoDrive
+const int stepPin = 8;
+const int directionPin = 9;
+
+// connect to pin "in"
+const int out = 2; // connected = HIGH, disconnected = LOW
+
+// checks the mode
+const int in = 3; // desynchronised (normal) = HIGH, synchronised (epilectic) = LOW
+
+// the motor is moved by alternating HIGH and LOW pulses with a certain delay
+// the greater the delay, the more time there is between each step 
+// & therefore the slower the rotational speed of the motor
+
+int totalSteps = 400; // total number of steps (200 in full step)
+int accelSteps = 1500;
+float constPulseWidth = 0.01;
+float pulseWidth = 0.0025; // pulse width in ms
+float rpm = 150; // revolutions per minute -> increasing this increases the speed
+int inputSteps = 500; // number of steps for delay increment/decrement
+float constMinDelay = 100L * 1000L / (0.5*totalSteps) / rpm;
+float minDelay = 100L * 1000L / totalSteps / rpm; // minimum delay in ms
+float constDelay = 100L * 1000L / totalSteps / 100;
+float maxDelay = 10*minDelay; // maximum delay in ms
+float delayValue = (maxDelay - minDelay)/totalSteps; // delay increment/decrement value
+String motion = "sinusoid";
+int go = 0; // control starting of motor motion
+
+const float yn[] = {0.013303,0.003836,-0.003003,-0.007575,-0.010175,-0.011037,-0.010555,-0.008933,-0.006561,-0.003686,-0.000637,0.002297,0.004824,0.006730,0.008067,0.008877,0.009230,0.009188,0.008805,0.008151,0.007275,0.006211,0.004955,0.003509,0.001876,0.000057,-0.001952,-0.004071,-0.006082,-0.007729,-0.008770,-0.008959,-0.008037,-0.005973,-0.003130,0.000019,0.003053,0.005496,0.006923,0.006864,0.005015,0.001906,-0.001510,-0.004282,-0.005484,-0.004147,0.000392,0.007215,0.014538,0.020657,0.023922,0.024091,0.022081,0.018759,0.015068,0.011896,0.010175,0.010622,0.012848,0.015860,0.018735,0.020482,0.020552,0.019153,0.016657,0.013400,0.009752,0.006056,0.002675,-0.000109,-0.002232,-0.003705,-0.004532,-0.004716,-0.004263,-0.003179,-0.001466,0.000798,0.003454,0.006331,0.009263,0.012080,0.014614,0.016699,0.018159,0.018842,0.018573,0.017200,0.014555,0.010580,0.005869,0.001334,-0.002118,-0.003641,-0.003176,-0.001320,0.001330,0.004183,0.006610,0.008042,0.007833,0.005593,0.001919,-0.001995,-0.005019,-0.006010,-0.003832,0.001466,0.008352,0.015211,0.020385,0.022668,0.022310,0.020019,0.016461,0.012341,0.008334,0.005144,0.003435,0.003898,0.006449,0.010095,0.013775,0.016414,0.016971,0.014356,0.008390,0.000653,-0.006959,-0.012603,-0.014519,-0.012691,-0.008498,-0.003281,0.001532,0.004881,0.006717,0.007343,0.007020,0.006039,0.004675,0.003209,0.001886,0.000880,0.000352,0.000469,0.001388,0.003282,0.006153,0.009692};
+const float ys[] = {-0.075216,0.024923,0.115587,0.192164,0.153427,0.070326,0.027513,-0.012117,-0.032284,-0.057244,-0.085859,-0.127738,-0.158200,-0.074929,0.031260,0.117008,0.190935,0.164927,0.093147,0.032740,-0.006139,-0.021988,-0.058833,-0.095421,-0.125065,-0.164380,-0.126513,-0.019744,0.072866,0.154613,0.151511,0.073463,0.022083,-0.014520,-0.035670,-0.046436,-0.061978,-0.074407,-0.095178,-0.118793,-0.152297,-0.143948,-0.045551,0.054938,0.134582,0.181885,0.134550,0.067204,0.030936,-0.004695,-0.026082,-0.043616,-0.064663,-0.071279,-0.079493,-0.081786,-0.085928,-0.105472,-0.123290,-0.154922,-0.137980,-0.037050,0.081048,0.162027,0.144563,0.073245,0.021214,-0.020725,-0.057962,-0.094055,-0.141563,-0.144396,-0.047549,0.054545,0.135308,0.186649,0.134265,0.067315,0.023781,-0.018006,-0.043801,-0.077572,-0.104804,-0.148889,-0.143267,-0.042820,0.057167,0.157321,0.172630,0.088308,0.037260,0.003805,-0.029663,-0.053831,-0.070280,-0.088538,-0.122516,-0.157471,-0.147696,-0.055457,0.038833,0.122886,0.208047,0.194608,0.112688,0.046098,0.002300,-0.030135,-0.064792,-0.105667,-0.156838,-0.148702,-0.054651,0.038293,0.100956,0.171063,0.220685,0.168887,0.077787,0.011821,-0.032750,-0.044137,-0.072908,-0.098016,-0.138204,-0.175988,-0.094113,0.012999,0.110500,0.187201,0.142241,0.067317,0.018655,-0.024489,-0.050752,-0.081080,-0.101064,-0.129250,-0.153133,-0.088572,0.012251,0.094265,0.178665,0.183508,0.095350,0.018626,-0.024978,-0.062464,-0.112015,-0.111185};
+
+const int sizeY = sizeof(yn)/sizeof(yn[0]);
+float del;
+float y[sizeY];
+
+int i = 0; // for iteration through yn & ys arrays
+int currentDirection = 1;
+int previousDirection = 1;
+int mode = 0; // synchronised (0) or desynchronised (1)
+int previousMode = 0;
+int buttonState = 1;
+
+/*BLYNK_WRITE(V0){
+  buttonState = param.asInt();
+}
+
+BLYNK_WRITE(V1){
+  go = param.asInt();
+}*/
+
+void setup() {
+  // code setup
+ // SwSerial.begin(9600);
+  Serial.begin(9600);
+  //Blynk.begin(Serial, auth);
+  
+  pinMode(stepPin,OUTPUT); 
+  pinMode(directionPin,OUTPUT);
+  pinMode(out,OUTPUT);
+  pinMode(in,INPUT);
+
+  digitalWrite(stepPin, LOW);
+  digitalWrite(directionPin, LOW);
+
+}
+
+void loop() {
+  /*Blynk.run();
+  if(go == 1){
+    if(buttonState == 0){
+      desynchronised();
+    }
+    else{
+      smoothMotion(accelSteps,totalSteps);
+      changeDirection();
+    }
+  }*/
+  smoothMotion(accelSteps,totalSteps);
+  changeDirection();
+}
+
+
+void smoothMotion(int n, int m){
+  accelerate(n);
+  //steps(m); 
+  decelerate(n);
+}
+
+void desynchronised(){
+  // desynchronised movement
+  int n = 50;
+  digitalWrite(out,HIGH);
+
+  if (i==0) {
+    digitalWrite(directionPin,currentDirection);
+    accelerate(50);
+  }
+  currentDirection = checkDirection(i); // check direction
+  if(previousDirection == currentDirection) steps(n); // direction hasn't changed
+  else {
+    decelerate(50);
+    digitalWrite(directionPin,currentDirection);
+    accelerate(50);
+    steps(n);      
+  }
+
+  i++;
+  previousDirection = currentDirection;
+  if (i>=sizeY) i = i-sizeY;
+}
+
+void changeDirection(){
+  // change direction
+  int d = digitalRead(directionPin);
+  if(d == 0){
+    digitalWrite(directionPin, HIGH);
+  }
+  else{
+    digitalWrite(directionPin, LOW);
+  }
+}
+
+void accelerate(int n){
+  // motor  acceleration 
+  del = maxDelay;
+  for(int i = 1; i <= n; i++){    
+    if(del <= minDelay) break; 
+    digitalWrite(stepPin, HIGH);
+    delay(pulseWidth);
+    digitalWrite(stepPin, LOW);
+    delay(del - pulseWidth);
+    // gradually decreasing the delay increases the rotational speed
+    del = del - delayValue;
+  }
+}
+
+void decelerate(int n){
+  // motor deceleration
+  del = minDelay;
+  for(int i = 1; i <= n; i++){
+    if(del >= maxDelay) break;
+    digitalWrite(stepPin, HIGH);
+    delay(pulseWidth);
+    digitalWrite(stepPin, LOW);
+    delay(del - pulseWidth);
+    // gradually increasing the delay decreases the rotational speed
+    del = del + delayValue;
+  }
+}
+
+void steps(int n){
+  // motor at a constant speed 
+  for(int i = 1; i <= n; i++){
+    digitalWrite(stepPin, HIGH);
+    delay(constPulseWidth);
+    digitalWrite(stepPin, LOW);
+    delay(constMinDelay - pulseWidth);
+    // no change in the delay means rotational speed remains the same / constant
+  }
+}
+
+int checkDirection(int i){
+  int h = 1;
+  int currentDirection;
+  if ((ys[i+h]-ys[i])/h >= 0){
+    currentDirection = 1;
+  }
+  else{
+    currentDirection = 0;
+  }
+
+return currentDirection;
+}
