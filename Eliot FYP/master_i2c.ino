@@ -31,8 +31,10 @@ void loop() {
 
 }
 
+// Serial data coming from the PC interfae currently comes in the form of a single integer
+// This represents the amount of terminals connected to the network
 void serialEvent() {
-  nbMotor = Serial.read();
+  nbMotor = Serial.read(); // Number of terminals >> Number of motors
 
   slaveSetup();
   randop();
@@ -48,13 +50,17 @@ void serialEvent() {
       }
   }
 
+// Structuring and transmission of data to the slaves
 void randop(){
     randomSeed(analogRead(A0));
     
+    // bigval is equal to steps [0:15] as an unsigned integer
     bigval = round((dels[3] - 747.0)/2.4445);
+  
+    // Mot_data[i][6] is the 6 byte data sent to motor i
     Mot_data[0][3] = (bigval & 0xF000) >> 12;
     Mot_data[0][2] = (bigval & 0x0F00) >> 8;
-    Mot_data[0][1] = (bigval & 0x00F0) >> 4;
+    Mot_data[0][1] = (bigval & 0x00F0) >> 4; 
     Mot_data[0][0] = (bigval & 0x000F);
     Mot_data[0][4] = 60;
     Mot_data[0][5] = 10;
