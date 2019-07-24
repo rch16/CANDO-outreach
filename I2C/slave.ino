@@ -1,6 +1,6 @@
 // slave arduino motor control
 
-#include <../Sources/Wire/src/Wire.h>
+#include <Wire.h>
 
 byte directionPin = 9;
 byte stepPin = 8;
@@ -16,6 +16,7 @@ int Sa[arrsz];   //Array starting at low speed
 int Sb[arrsz];   //Array finishing at high speed
 int Sc[2*arrsz]; //Extended array starting at low speed
 int temp[arrsz]; //Temp array
+bool go = false; //Changed using i2c
 
 //tn determine the steps at which we switch between linear/exponential growth
 int time_array[6] = {0,0,0,0,0,0};
@@ -35,6 +36,9 @@ void setup()
   
   pinMode(directionPin, OUTPUT);
   pinMode(stepPin, OUTPUT);
+
+  //Wire.begin(9);
+  //Wire.onReceive(receiveEvent);
 
   Serial.println("Creating arrays");
   createArrays();
@@ -140,4 +144,8 @@ void time_array_mod(int t[]){
     Serial.print("] = ");
     Serial.println(t[i]);
   }
+}
+
+void receiveEvent(int bytes){
+    go = true;
 }
