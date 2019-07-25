@@ -2,18 +2,34 @@
 
 #include <Wire.h>
 
-void setup() {
-  Wire.begin(); // join i2c bus (address optional for master)
+void setup()
+{
+  Wire.begin(); 
 }
 
-byte x = 0;
-
-void loop() {
-  Wire.beginTransmission(8); // transmit to device #8
-  Wire.write("x is ");        // sends five bytes
-  Wire.write(x);              // sends one byte
-  Wire.endTransmission();    // stop transmitting
-
-  x++;
+void loop()
+{
+  Wire.beginTransmission(1);
+  Wire.write('H');
+  Wire.endTransmission();
+ 
+  delay(500);
+  
+  Wire.beginTransmission(1);
+  Wire.write('L');
+  Wire.endTransmission();
+ 
+  delay(500);
+  
+  Wire.beginTransmission(2);
+  Wire.write('H');
+  Wire.endTransmission();
+ 
+  delay(500);
+  
+  Wire.beginTransmission(2);
+  Wire.write('L');
+  Wire.endTransmission();
+ 
   delay(500);
 }
