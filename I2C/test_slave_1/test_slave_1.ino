@@ -3,14 +3,15 @@
 #include <Wire.h>
 
 const byte slaveId = 1;
+const int led = 13;
 
 void setup()
 {
   Wire.begin(slaveId); 
   Wire.onReceive(receiveEvent);
  
-  pinMode(13,OUTPUT);
-  digitalWrite(13,LOW);    
+  pinMode(LED_BUILTIN,OUTPUT);
+  digitalWrite(LED_BUILTIN,LOW);    
 }
 
 void loop()
