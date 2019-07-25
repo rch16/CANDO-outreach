@@ -37,6 +37,11 @@ void setup()
   pinMode(directionPin, OUTPUT);
   pinMode(stepPin, OUTPUT);
 
+  // needs to be adapted according to the desired address of the board
+  // Reference motor = 9
+  // Motor 1 = 10
+  // Motor 2 = 11
+  // Motor N = N + 9
   //Wire.begin(9);
   //Wire.onReceive(receiveEvent);
 
