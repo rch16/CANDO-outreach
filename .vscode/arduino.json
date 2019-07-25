@@ -1,0 +1,6 @@
+{
+    "board": "arduino:avr:uno",
+    "programmer": "AVR ISP",
+    "port": "/dev/cu.usbmodem14201",
+    "sketch": "I2C/test_master.ino"
+}
