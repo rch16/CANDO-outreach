@@ -2,48 +2,41 @@
 
 #include <Wire.h>
 
+const byte slaveID = 2;
+
 byte directionPin = 9;
 byte stepPin = 8;
-int numberOfSteps = 1125; //ONLY WORKS WITH NBOFSTEPS > 1524
-int iterations=1;
+byte ledPin = 13;
+
 const int arrsz = 50;     //Number of steps it takes for ∂f/∂x to reach 1 
 const int exp_inc = 10;   //what speed value is reached after arrsz steps 
-byte ledPin = 13;
 const int minspeed = 2500;//1000; // delay, not speed
+
+int numberOfSteps = 1125; //ONLY WORKS WITH NBOFSTEPS > 1524
+int iterations=1;
 int maxspeed = 1000;//300;
 int motorSpeed = 0;
 int Sa[arrsz];   //Array starting at low speed
 int Sb[arrsz];   //Array finishing at high speed
 int Sc[2*arrsz]; //Extended array starting at low speed
 int temp[arrsz]; //Temp array
+int time_array[6] = {0,0,0,0,0,0}; //tn determine the steps at which we switch between linear/exponential growth
+
 bool go = false; //Changed using i2c
-
-//tn determine the steps at which we switch between linear/exponential growth
-int time_array[6] = {0,0,0,0,0,0};
-//t[0] = arrsz;
-//t[1] = arrsz + (minspeed-maxspeed) - 2*exp_inc;
-//t[2] = time_array[1] + arrsz;
-//t[5] = numberOfSteps - arrsz;
-//t[4] = t[5] - (minspeed-maxspeed - 2*exp_inc) - 1;
-//t[3] = t[4] - arrsz;
-
   
 void setup() 
 { 
-
   Serial.begin(9600);
   Serial.println("Starting Stepper");
-  
+
+  Wire.begin(slaveId); // begin i2c communication at relevant address
+  Wire.onReceive(receiveEvent); // if data received, call receiveEvent function
+  Serial.println("I2C Communication Begun");
+
   pinMode(directionPin, OUTPUT);
   pinMode(stepPin, OUTPUT);
-
-  // needs to be adapted according to the desired address of the board
-  // Reference motor = 9
-  // Motor 1 = 10
-  // Motor 2 = 11
-  // Motor N = N + 9
-  //Wire.begin(9);
-  //Wire.onReceive(receiveEvent);
+  pinMode(LED_BUILTIN,OUTPUT);
+  digitalWrite(LED_BUILTIN,LOW); 
 
   Serial.println("Creating arrays");
   createArrays();
@@ -152,5 +145,27 @@ void time_array_mod(int t[]){
 }
 
 void receiveEvent(int bytes){
-    go = true;
+      // communication received
+  bool start;
+  
+  while(Wire.available() > 0)
+  {
+    // read data
+    inChar = Wire.read();  
+    
+    if (start == true)
+    {
+      // LED high
+      digitalWrite(LED_BUILTIN, HIGH);
+      // start motor!
+      go = true;
+    }
+    else if (start == false)
+    {
+      // LED low
+      digitalWrite(LED_BUILTIN, LOW);
+      // stop motion
+      go = false;
+    }
+  }
 }
