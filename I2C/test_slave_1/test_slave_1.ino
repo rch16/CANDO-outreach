@@ -3,7 +3,6 @@
 #include <Wire.h>
 
 const byte slaveId = 1;
-const int led = 13;
 
 void setup()
 {
@@ -28,11 +27,11 @@ void receiveEvent(int howMany)
     
     if (inChar == 'H')
     {
-      digitalWrite(13, HIGH);
+      digitalWrite(LED_BUILTIN, HIGH);
     }
     else if (inChar == 'L')
     {
-      digitalWrite(13, LOW);
+      digitalWrite(LED_BUILTIN, LOW);
     }
   }
 }

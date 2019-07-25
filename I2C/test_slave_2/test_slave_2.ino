@@ -3,7 +3,6 @@
 #include <Wire.h>
 
 const byte slaveId = 2;
-const int led = 13;
 
 void setup()
 {
