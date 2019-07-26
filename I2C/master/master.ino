@@ -20,6 +20,7 @@ int x = 0;
 int y = 0;
 int Serial_data;
 int nbMotor = 2; // number of motors
+int ready = 0; // ready to start or not?
 int slave_id[max_size]  = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 int Mot_cycle[max_size] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
@@ -39,24 +40,25 @@ void setup() {
 
 }
 void loop() {
-  for(int i = 0; i < nbMotor; i++){
-    send_data(go);
-  }
-  
-  delay(10000);
-  
-  for(int i = 1; i < nbMotor; i++){
-    send_data(stop);
-  }
+  While(ready == 1){
+    for(int i = 0; i < nbMotor; i++){
+      send_data(go);
+    }
+    
+    delay(10000);
+    
+    for(int i = 1; i < nbMotor; i++){
+      send_data(stop);
+    }
 
-  delay(10000);
+    delay(10000);
+  }
 }
 
 // Serial data coming from the PC interfae currently comes in the form of a single integer
 // This represents the amount of terminals connected to the network
 void serialEvent() {
-  // nbMotor = Serial.read(); // Number of terminals >> Number of motors
-
+  ready = Serial.read(); // Ready to start or not? 0 = NO, 1 = YES
   }
 
 void send_data(bool sendData){
