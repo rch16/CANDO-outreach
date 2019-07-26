@@ -1,4 +1,7 @@
 // master arduino motor control
+// SDA = A4
+// SCL = A5
+// Common GND
 
 #include <Wire.h>
 
