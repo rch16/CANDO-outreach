@@ -12,12 +12,10 @@ while go
     
     if (a == 0)
         % If user inputs "stop", motor stops
-        start = false;
         fprintf('stopping motor\n');
-        break;
+        go = false;
     else if (a == 1)
         % If user inputs "go", motor starts
-        start = true;
         fprintf('starting motor\n');
     else
         % Invalid input, do nothing
