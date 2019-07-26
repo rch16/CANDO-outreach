@@ -1,4 +1,5 @@
 // test master i2c
+// working on: serial control of starting i2c communication
 
 #include <Wire.h>
 
@@ -14,7 +15,9 @@ void setup()
 
 void loop()
 {
+  Serial.println(ready);
   while(ready == 1){
+    Serial.println("Go!");
     // transmit to slave 1, H = HIGH
     Wire.beginTransmission(1);
     Wire.write('H');
