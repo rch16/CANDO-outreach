@@ -14,7 +14,7 @@ void setup()
 
 void loop()
 {
-  While(ready == 1){
+  while(ready == 1){
     // transmit to slave 1, H = HIGH
     Wire.beginTransmission(1);
     Wire.write('H');
