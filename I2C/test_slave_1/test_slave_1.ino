@@ -2,7 +2,7 @@
 
 #include <Wire.h>
 
-const byte slaveId = 2;
+const byte slaveId = 1;
 
 void setup()
 {
