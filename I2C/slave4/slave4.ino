@@ -4,7 +4,7 @@
 
 // Which slave?
 // This address has to match up to where the Master is sending information
-const byte slaveID = 2;
+const byte slaveID = 4;
 
 // Pins
 byte directionPin = 9;
