@@ -11,13 +11,17 @@ void setup()
   Wire.begin(); 
   // open a serial channel
   Serial.begin(9600);
+  // use built in LED for debugging
+  pinMode(LED_BUILTIN,OUTPUT);
+  digitalWrite(LED_BUILTIN,LOW);
 }
 
 void loop()
 {
-  Serial.println(ready);
+
   while(ready == 1){
-    Serial.println("Go!");
+    digitalWrite(LED_BUILTIN, HIGH); // ready = 1
+
     // transmit to slave 1, H = HIGH
     Wire.beginTransmission(1);
     Wire.write('H');
@@ -46,6 +50,7 @@ void loop()
   
     delay(500);
   }
+  digitalWrite(LED_BUILTIN, LOW); // ready = 0
 }
 
 // Serial data coming from the PC interfae currently comes in the form of a single integer
