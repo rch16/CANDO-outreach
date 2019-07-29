@@ -17,39 +17,44 @@ void setup()
 }
 
 void loop()
-{
-
-  while(ready == 1){
-    digitalWrite(LED_BUILTIN, HIGH); // ready = 1
+{   
 
     // transmit to slave 1, H = HIGH
-    Wire.beginTransmission(1);
-    Wire.write('H');
-    Wire.endTransmission();
+    if(ready == 1){
+      Wire.beginTransmission(1);
+      Wire.write('H');
+      Wire.endTransmission();
+    }
   
     delay(500);
     
     // transmit to slave 1, L = LOW
-    Wire.beginTransmission(1);
-    Wire.write('L');
-    Wire.endTransmission();
+    if(ready == 1){
+      Wire.beginTransmission(1);
+      Wire.write('L');
+      Wire.endTransmission();
+    }
   
     delay(500);
     
     // transmit to slave 2, H = HIGH
-    Wire.beginTransmission(2);
-    Wire.write('H');
-    Wire.endTransmission();
+    if(ready == 1){
+      Wire.beginTransmission(2);
+      Wire.write('H');
+      Wire.endTransmission();
+    }
   
     delay(500);
     
     // transmit to slave 2, L = LOW
-    Wire.beginTransmission(2);
-    Wire.write('L');
-    Wire.endTransmission();
-  
+    if(ready == 1){
+      Wire.beginTransmission(2);
+      Wire.write('L');
+      Wire.endTransmission();
+    }
+    
     delay(500);
-  }
+
   digitalWrite(LED_BUILTIN, LOW); // ready = 0
 }
 
@@ -57,4 +62,10 @@ void loop()
 // This represents the amount of terminals connected to the network
 void serialEvent() {
   ready = Serial.read(); // Ready to start or not? 0 = NO, 1 = YES
+  if(ready == 1){
+    digitalWrite(LED_BUILTIN, HIGH); // ready = 1
   }
+  else{
+    digitalWrite(LED_BUILTIN, LOW); // ready = 0
+  }
+}
