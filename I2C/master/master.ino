@@ -8,12 +8,6 @@
 bool go = true;
 bool stop = false;
 
-//Array with percentage delay values dels[3] = 16000 = 100%
-const unsigned int dels[9] = {6400, 9600, 12800, 16000, 19200, 22400, 25600, 28800, 32000};
-
-unsigned int bigval;
-
-const int max_size = 10;
 const int ledPin = 13;
 
 int x = 0;
@@ -21,13 +15,7 @@ int y = 0;
 int Serial_data;
 int nbMotor = 2; // number of motors
 int ready = 0; // ready to start or not?
-int slaveID = 1;
-
-byte stop_data[6] = {0, 0, 0, 0, 0, 0};
-byte Mot_data[max_size][6] = {{0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}};
-// Structure of Mot_data[i][j]:
-//i is the motor number, 0 being reference
-//j is each data type: 0 to 3 are the nbOfSteps, 4 is maxspeed, 5 is iterations
+int slaveID[2] = {1,2}; // IDs of Slave Arduinos
 
 void setup() {
   // Start the I2C Bus as Master - address optional
@@ -61,7 +49,9 @@ void serialEvent() {
   }
 
 void send_data(int sendData){
-  Wire.beginTransmission(slaveID); // transmit to device #slave
-  Wire.write(sendData);          // sends data 
-  Wire.endTransmission();        // end transmission
+  for(int i = 0; i < slaveID.size(); i++){
+    Wire.beginTransmission(slaveID[i]); // connect to device
+    Wire.write(sendData); // send data
+    Wire.endTransmission(); // end transmission
   }
+}
