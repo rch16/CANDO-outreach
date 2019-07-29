@@ -53,7 +53,7 @@ void setup()
 void loop() { 
   int d = digitalRead(directionPin);
   
-  if(go == true){
+  if(go == true){ // if changed to false, stops motor at end of current motion loop
     Serial.println("go");
     
     for(int i = 0; i < iterations; i++){
