@@ -3,6 +3,7 @@
 #include <Wire.h>
 
 // Which slave?
+// This address has to match up to where the Master is sending information
 const byte slaveID = 2;
 
 // Pins
@@ -149,12 +150,10 @@ void receiveEvent(int bytes){
   { 
     input = Wire.read();  
     if (input == 1){ // read data
-      Serial.println("Input = 1");
       digitalWrite(LED_BUILTIN, HIGH);// LED high
       go = true; // start motor!
     }
     else if (input == 0){
-      Serial.println("Input = 0");
       digitalWrite(LED_BUILTIN, LOW); // LED low
       go = false; // stop motion
     }

@@ -149,12 +149,10 @@ void receiveEvent(int bytes){
   { 
     input = Wire.read();  
     if (input == 1){ // read data
-      Serial.println("Input = 1");
       digitalWrite(LED_BUILTIN, HIGH);// LED high
       go = true; // start motor!
     }
     else if (input == 0){
-      Serial.println("Input = 0");
       digitalWrite(LED_BUILTIN, LOW); // LED low
       go = false; // stop motion
     }
