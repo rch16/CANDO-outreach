@@ -21,8 +21,7 @@ int y = 0;
 int Serial_data;
 int nbMotor = 2; // number of motors
 int ready = 0; // ready to start or not?
-int slave_id[max_size]  = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-int Mot_cycle[max_size] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+int slaveID = 1;
 
 byte stop_data[6] = {0, 0, 0, 0, 0, 0};
 byte Mot_data[max_size][6] = {{0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}};
@@ -40,15 +39,15 @@ void setup() {
 
 }
 void loop() {
-  While(ready == 1){
+  if(ready == 1){
     for(int i = 0; i < nbMotor; i++){
-      send_data(go);
+      send_data(1);
     }
     
     delay(10000);
     
     for(int i = 1; i < nbMotor; i++){
-      send_data(stop);
+      send_data(0);
     }
 
     delay(10000);
@@ -61,10 +60,8 @@ void serialEvent() {
   ready = Serial.read(); // Ready to start or not? 0 = NO, 1 = YES
   }
 
-void send_data(bool sendData){
-  Wire.beginTransmission(slave); // transmit to device #slave
+void send_data(int sendData){
+  Wire.beginTransmission(slaveID); // transmit to device #slave
   Wire.write(sendData);          // sends data 
   Wire.endTransmission();        // end transmission
   }
-
-

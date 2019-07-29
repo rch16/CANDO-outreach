@@ -2,12 +2,15 @@
 
 #include <Wire.h>
 
+// Which slave?
 const byte slaveID = 1;
 
+// Pins
 byte directionPin = 9;
 byte stepPin = 8;
 byte ledPin = 13;
 
+// Set values
 const int arrsz = 50;     //Number of steps it takes for ∂f/∂x to reach 1 
 const int exp_inc = 10;   //what speed value is reached after arrsz steps 
 const int minspeed = 2500;//1000; // delay, not speed
@@ -16,55 +19,57 @@ int numberOfSteps = 1125; //ONLY WORKS WITH NBOFSTEPS > 1524
 int iterations=1;
 int maxspeed = 1000;//300;
 int motorSpeed = 0;
+
+// Motor operation arrays
 int Sa[arrsz];   //Array starting at low speed
 int Sb[arrsz];   //Array finishing at high speed
 int Sc[2*arrsz]; //Extended array starting at low speed
 int temp[arrsz]; //Temp array
 int time_array[6] = {0,0,0,0,0,0}; //tn determine the steps at which we switch between linear/exponential growth
 
-bool go = false; //Changed using i2c
+// Changed using i2c
+bool go = false; 
+int input = false;
   
 void setup() 
 { 
   Serial.begin(9600);
-  Serial.println("Starting Stepper");
 
-  Wire.begin(slaveId); // begin i2c communication at relevant address
+  Wire.begin(slaveID); // begin i2c communication at relevant address
   Wire.onReceive(receiveEvent); // if data received, call receiveEvent function
-  Serial.println("I2C Communication Begun");
 
   pinMode(directionPin, OUTPUT);
   pinMode(stepPin, OUTPUT);
   pinMode(LED_BUILTIN,OUTPUT);
   digitalWrite(LED_BUILTIN,LOW); 
 
-  Serial.println("Creating arrays");
-  createArrays();
+  createArrays(); // creating arrays
+  time_array_mod(time_array); // assigning time array
+  digitalWrite(directionPin, HIGH); // start with direction pin high
 
-  Serial.println("Assigning time array");
-  time_array_mod(time_array);
-
-  Serial.println("Start with direction pin high");
-  digitalWrite(directionPin, HIGH);
-
-  Serial.println("Start motor operation");
 }
 
 void loop() { 
   int d = digitalRead(directionPin);
-  for(int i = 0; i < iterations; i++){
-    changeDirection(d);
-    motorSpeed = minspeed;
-    for (int i = 0; i < numberOfSteps; i++){
-      digitalWrite(stepPin, HIGH);
-      delayMicroseconds(motorSpeed + 4);
-      digitalWrite(stepPin, LOW);
-      delayMicroseconds(motorSpeed);
-      motorSpeed = stepInterval(i, time_array);
-      //Serial.println(motorSpeed);
-      }
-    delayMicroseconds(100);
+  
+  if(go == true){
+    Serial.println("go");
+    
+    for(int i = 0; i < iterations; i++){
+      changeDirection(d);
+      motorSpeed = minspeed;
+      for (int i = 0; i < numberOfSteps; i++){
+        digitalWrite(stepPin, HIGH);
+        delayMicroseconds(motorSpeed + 4);
+        digitalWrite(stepPin, LOW);
+        delayMicroseconds(motorSpeed);
+        motorSpeed = stepInterval(i, time_array);
+        Serial.println(motorSpeed);
+        }
+      delayMicroseconds(100);
+    }
   }
+  digitalWrite(LED_BUILTIN, LOW);
 }
 
 void createArrays(){
@@ -136,36 +141,22 @@ void time_array_mod(int t[]){
   t[3] = t[2];
   t[4] = t[3] + arrsz;
   t[5] = numberOfSteps - 2*arrsz;
-  for(int i = 0; i < 6; i++){
-    Serial.print("t[");
-    Serial.print(i);
-    Serial.print("] = ");
-    Serial.println(t[i]);
-  }
 }
 
 void receiveEvent(int bytes){
-      // communication received
-  bool start;
-  
+  // communication received
   while(Wire.available() > 0)
-  {
-    // read data
-    inChar = Wire.read();  
-    
-    if (start == true)
-    {
-      // LED high
-      digitalWrite(LED_BUILTIN, HIGH);
-      // start motor!
-      go = true;
+  { 
+    input = Wire.read();  
+    if (input == 1){ // read data
+      Serial.println("Input = 1");
+      digitalWrite(LED_BUILTIN, HIGH);// LED high
+      go = true; // start motor!
     }
-    else if (start == false)
-    {
-      // LED low
-      digitalWrite(LED_BUILTIN, LOW);
-      // stop motion
-      go = false;
+    else if (input == 0){
+      Serial.println("Input = 0");
+      digitalWrite(LED_BUILTIN, LOW); // LED low
+      go = false; // stop motion
     }
   }
 }
