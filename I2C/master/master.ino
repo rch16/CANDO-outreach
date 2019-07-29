@@ -12,7 +12,7 @@ int y = 0;
 int Serial_data;
 int nbMotor = 2; // number of motors
 int ready = 0; // ready to start or not?
-int slaveID[2] = {1,2}; // IDs of Slave Arduinos
+int slaveID[4] = {1,2,3,4}; // IDs of Slave Arduinos -> change this to user input?
 
 void setup() {
   // Start the I2C Bus as Master - address optional
