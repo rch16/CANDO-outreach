@@ -5,9 +5,6 @@
 
 #include <Wire.h>
 
-bool go = true;
-bool stop = false;
-
 const int ledPin = 13;
 
 int x = 0;
@@ -29,13 +26,13 @@ void setup() {
 void loop() {
   if(ready == 1){
     for(int i = 0; i < nbMotor; i++){
-      send_data(1);
+      send_data(1); // go
     }
     
     delay(10000);
     
     for(int i = 1; i < nbMotor; i++){
-      send_data(0);
+      send_data(0); // stop
     }
 
     delay(10000);
