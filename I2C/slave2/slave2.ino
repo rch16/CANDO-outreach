@@ -26,7 +26,7 @@ int Sa[arrsz];   //Array starting at low speed
 int Sb[arrsz];   //Array finishing at high speed
 int Sc[2*arrsz]; //Extended array starting at low speed
 int temp[arrsz]; //Temp array
-int time_array[6] = {0,0,0,0,0,0}; //tn determine the steps at which we switch between linear/exponential growth
+int time_array[6]; //tn determine the steps at which we switch between linear/exponential growth
 
 // Changed using i2c
 bool go = false; 
@@ -136,6 +136,7 @@ int stepInterval(int i, int t[]){
  }
 
 void time_array_mod(int t[]){
+  // time intervals for different stages in the acceleration/deceleration curve
   t[0] = arrsz;
   t[1] = arrsz + minspeed/4 - 2*exp_inc; 
   t[2] = t[1] + arrsz;
