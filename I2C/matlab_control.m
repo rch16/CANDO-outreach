@@ -12,6 +12,7 @@ while go
     
     if (a == 0)
         % If user inputs "stop", motor stops
+        fprintf(x, '%c', a);
         go = false;
     else if (a == 1)
         % If user inputs "go", motor starts
