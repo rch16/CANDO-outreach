@@ -11,7 +11,6 @@ const int slaveNum = 2; // number of slaves
 int x = 0;
 int y = 0;
 int Serial_data;
-int nbMotor = 2; // number of motors
 int ready = 0; // ready to start or not?
 int slaveID[slaveNum] = {1,2}; // IDs of Slave Arduinos -> change this to user input?
 
@@ -26,13 +25,13 @@ void setup() {
 }
 void loop() {
   if(ready == 1){
-    for(int i = 0; i < nbMotor; i++){
+    for(int i = 0; i < slaveNum; i++){
       send_data(1); // go
       digitalWrite(LED_BUILTIN, HIGH);
     } 
   }
   else{ // if ready == 0
-    for(int i = 0; i < nbMotor; i++){
+    for(int i = 0; i < slaveNum; i++){
       send_data(0); // stop
       digitalWrite(LED_BUILTIN, LOW);
     }
