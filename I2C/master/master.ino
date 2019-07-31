@@ -6,36 +6,36 @@
 #include <Wire.h>
 
 const int ledPin = 13;
+const int slaveNum = 2; // number of slaves
 
 int x = 0;
 int y = 0;
 int Serial_data;
 int nbMotor = 2; // number of motors
 int ready = 0; // ready to start or not?
-int slaveID[4] = {1,2,3,4}; // IDs of Slave Arduinos -> change this to user input?
+int slaveID[slaveNum] = {1,2}; // IDs of Slave Arduinos -> change this to user input?
 
 void setup() {
   // Start the I2C Bus as Master - address optional
   Wire.begin();
-
   Serial.begin(9600);
 
-  digitalWrite(ledPin, HIGH);
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
 
 }
 void loop() {
   if(ready == 1){
     for(int i = 0; i < nbMotor; i++){
       send_data(1); // go
-    }
-    
-    delay(10000);
-    
-    for(int i = 1; i < nbMotor; i++){
+      digitalWrite(LED_BUILTIN, HIGH);
+    } 
+  }
+  else{ // if ready == 0
+    for(int i = 0; i < nbMotor; i++){
       send_data(0); // stop
+      digitalWrite(LED_BUILTIN, LOW);
     }
-
-    delay(10000);
   }
 }
 
@@ -46,7 +46,7 @@ void serialEvent() {
   }
 
 void send_data(int sendData){
-  for(int i = 0; i < slaveID.size(); i++){
+  for(int i = 0; i < slaveNum; i++){
     Wire.beginTransmission(slaveID[i]); // connect to device
     Wire.write(sendData); // send data
     Wire.endTransmission(); // end transmission
