@@ -14,11 +14,11 @@ byte ledPin = 13;
 // Set values
 const int arrsz = 50;     //Number of steps it takes for ∂f/∂x to reach 1 
 const int exp_inc = 10;   //what speed value is reached after arrsz steps 
-const int minspeed = 2500;//1000; // delay, not speed
+const int minspeed = 2500; //1000; // delay, not speed
 
-int numberOfSteps = 1125; //ONLY WORKS WITH NBOFSTEPS > 1524
-int iterations=1;
-int maxspeed = 1000;//300;
+int numberOfSteps = 1125; //ONLY WORKS WITH NBOFSTEPS > 1524 -> incorrect value?
+int iterations = 1;
+int maxspeed = 1000; //300;
 int motorSpeed = 0;
 
 // Motor operation arrays
@@ -42,19 +42,19 @@ void setup()
   pinMode(directionPin, OUTPUT);
   pinMode(stepPin, OUTPUT);
   pinMode(LED_BUILTIN,OUTPUT);
+  
   digitalWrite(LED_BUILTIN,LOW); 
+  digitalWrite(directionPin, HIGH); // start with direction pin high
+  // -> Pulley goes down first
 
   createArrays(); // creating arrays
   time_array_mod(time_array); // assigning time array
-  digitalWrite(directionPin, HIGH); // start with direction pin high
-
 }
 
 void loop() { 
   int d = digitalRead(directionPin);
   
   if(go == true){ // if changed to false, stops motor at end of current motion loop
-    Serial.println("go");
     
     for(int i = 0; i < iterations; i++){
       changeDirection(d);
@@ -65,7 +65,7 @@ void loop() {
         digitalWrite(stepPin, LOW);
         delayMicroseconds(motorSpeed);
         motorSpeed = stepInterval(i, time_array);
-        Serial.println(motorSpeed);
+        //Serial.println(motorSpeed);
         }
       delayMicroseconds(100);
     }
