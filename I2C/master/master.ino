@@ -27,13 +27,11 @@ void loop() {
   if(ready == 1){
     for(int i = 0; i < slaveNum; i++){
       send_data(1); // go
-      digitalWrite(LED_BUILTIN, HIGH);
     } 
   }
   else{ // if ready == 0
     for(int i = 0; i < slaveNum; i++){
       send_data(0); // stop
-      digitalWrite(LED_BUILTIN, LOW);
     }
   }
 }
@@ -42,6 +40,12 @@ void loop() {
 // This represents the amount of terminals connected to the network
 void serialEvent() {
   ready = Serial.read(); // Ready to start or not? 0 = NO, 1 = YES
+  if(ready == 1){
+    digitalWrite(LED_BUILTIN, HIGH);
+  }
+  else{
+    digitalWrite(LED_BUILTIN, LOW);
+  }
   }
 
 void send_data(int sendData){
