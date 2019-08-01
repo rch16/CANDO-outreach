@@ -4,7 +4,7 @@
 
 // Which slave?
 // This address has to match up to where the Master is sending information
-const byte slaveID = 1; // change depending on which arduino you're sending code to
+const byte slaveID = 2; // change depending on which arduino you're sending code to
 
 // Pins
 byte directionPin = 9;
