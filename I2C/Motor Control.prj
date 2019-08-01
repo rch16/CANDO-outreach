@@ -1,0 +1,87 @@
+<deployment-project plugin="plugin.apptool" plugin-version="1.0">
+  <configuration build-checksum="1895513742" file="/Users/RebeccaHallam/Documents/GitHub/CANDO-outreach/I2C/Motor Control.prj" location="/Users/RebeccaHallam/Documents/GitHub/CANDO-outreach/I2C" name="Motor Control" target="target.mlapps" target-name="Package App">
+    <param.appname>Motor Control</param.appname>
+    <param.authnamewatermark>Becca Hallam</param.authnamewatermark>
+    <param.email>rch16@ic.ac.uk</param.email>
+    <param.company>NGNI</param.company>
+    <param.icon />
+    <param.icons />
+    <param.summary>GUI for Motor Control</param.summary>
+    <param.description>GUI for Motor Control for art exhibition for CANDO project</param.description>
+    <param.screenshot />
+    <param.version>1.0</param.version>
+    <param.products.name />
+    <param.products.id />
+    <param.products.version />
+    <param.platforms />
+    <param.output>/Users/RebeccaHallam/Documents/GitHub/CANDO-outreach/I2C</param.output>
+    <param.guid>b39c746e-0707-41b0-9cbe-3e0a3691b443</param.guid>
+    <unset>
+      <param.icon />
+      <param.icons />
+      <param.screenshot />
+      <param.version />
+      <param.products.name />
+      <param.products.id />
+      <param.products.version />
+      <param.platforms />
+      <param.output />
+    </unset>
+    <fileset.main>
+      <file>${PROJECT_ROOT}/GUI.m</file>
+    </fileset.main>
+    <fileset.depfun>
+      <file>${PROJECT_ROOT}/GUI.fig</file>
+    </fileset.depfun>
+    <fileset.resources />
+    <fileset.package />
+    <build-deliverables>
+      <file location="/Users/RebeccaHallam/Documents/GitHub/CANDO-outreach" name="I2C" optional="false">/Users/RebeccaHallam/Documents/GitHub/CANDO-outreach/I2C</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>/Applications/MATLAB_R2016b.app</root>
+      <toolboxes>
+        <toolbox name="fixedpoint" />
+        <toolbox name="matlabcoder" />
+        <toolbox name="matlabhdlcoder" />
+        <toolbox name="embeddedcoder" />
+      </toolboxes>
+      <toolbox>
+        <fixedpoint>
+          <enabled>true</enabled>
+        </fixedpoint>
+      </toolbox>
+      <toolbox>
+        <matlabcoder>
+          <enabled>true</enabled>
+        </matlabcoder>
+      </toolbox>
+      <toolbox>
+        <matlabhdlcoder>
+          <enabled>true</enabled>
+        </matlabhdlcoder>
+      </toolbox>
+      <toolbox>
+        <embeddedcoder>
+          <enabled>true</enabled>
+        </embeddedcoder>
+      </toolbox>
+    </matlab>
+    <platform>
+      <unix>true</unix>
+      <mac>true</mac>
+      <windows>false</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>10.14.4</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>maci64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>
