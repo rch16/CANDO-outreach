@@ -19,43 +19,79 @@ else
 end
 % End initialization code - DO NOT EDIT
 
+
 % --- Executes just before GUI is made visible.
 function GUI_OpeningFcn(hObject, eventdata, handles, varargin)
-    % Choose default command line output for GUI
-    handles.output = hObject;
-    % Update handles structure
-    guidata(hObject, handles);
-end 
+% This function has no output args, see OutputFcn.
+% hObject    handle to figure
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% varargin   command line arguments to GUI (see VARARGIN)
+
+% Choose default command line output for GUI
+handles.output = hObject;
+setappdata(handles.start,'start_value',0); 
+
+% Update handles structure
+guidata(hObject, handles);
+
+global s;
+s = serial('/dev/cu.usbmodem14201', 'BAUD', 9600);
+
+% UIWAIT makes GUI wait for user response (see UIRESUME)
+% uiwait(handles.figure1);
 
 % --- Outputs from this function are returned to the command line.
 function varargout = GUI_OutputFcn(hObject, eventdata, handles) 
-    % Get default command line output from handles structure
-    varargout{1} = handles.output;
+% varargout  cell array for returning output args (see VARARGOUT);
+% hObject    handle to figure
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Get default command line output from handles structure
+varargout{1} = handles.output;
+
+
+% --- Executes on button press in start.
+function start_Callback(hObject, eventdata, handles)
+% hObject    handle to start (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global s;
+fprintf(s, '%c', 1);
+
+% --- Executes on button press in stop.
+function stop_Callback(hObject, eventdata, handles)
+% hObject    handle to stop (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global s;
+fprintf(s, '%d', 0);
+
+
+% --- Executes on button press in connect.
+function connect_Callback(hObject, eventdata, handles)
+% hObject    handle to connect (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global s;
+fclose(instrfind);
+try
+    fopen(s);
+catch
+   errordlg('Port not connected.', 'Connection Error');
 end
 
-% --- Executes on button press in pushbutton1.
-function pushbutton1_Callback(hObject, eventdata, handles)
-end
 
-% --- Executes on slider movement.
-function slider1_Callback(hObject, eventdata, handles)
-    % Get position of the slider
-    val = get( hObject, 'Value' ); 
-    updateEditBox( val );
-end
 
-% --- Executes during object creation, after setting all properties.
-function slider1_CreateFcn(hObject, eventdata, handles)
-    if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor',[.9 .9 .9]);
-    end
-end 
-
-function edit1_Callback(hObject, eventdata, handles)
-
-% --- Executes during object creation, after setting all properties.
-function edit1_CreateFcn(hObject, eventdata, handles)
-    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-    end
+% --- Executes on button press in disconnect.
+function disconnect_Callback(hObject, eventdata, handles)
+% hObject    handle to disconnect (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global s;
+try
+    fclose(s);
+catch
+   errordlg('Port not disconnected.', 'Disconnection Error');
 end
