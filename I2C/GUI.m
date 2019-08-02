@@ -78,6 +78,7 @@ global s;
 fclose(instrfind);
 try
     fopen(s);
+    msgbox('Serial Port Connected','Success');
 catch
    errordlg('Port not connected.', 'Connection Error');
 end
@@ -92,6 +93,7 @@ function disconnect_Callback(hObject, eventdata, handles)
 global s;
 try
     fclose(s);
+    msgbox('Serial Port Disconnected','Success');
 catch
    errordlg('Port not disconnected.', 'Disconnection Error');
 end
