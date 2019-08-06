@@ -2,36 +2,37 @@
 
 #include <Wire.h>
 
-// Which slave?
-// This address has to match up to where the Master is sending information
-const byte slaveID = 1; // change depending on which arduino you're sending code to
-
-// Pins
+// - - - - - - - - - PINS - - - - - - - - - 
 byte directionPin = 9;
 byte stepPin = 8;
 byte ledPin = 13;
 
+// - - - - - - - - - SLAVE DATA - - - - - - - - - 
+// Slave address has to match up to where the Master is sending information
+const byte slaveID = 1; // change depending on which arduino you're sending code to
+
+// - - - - - - - - - MOTOR INITIALISATION - - - - - - - - - 
 // Set values
 const int arrsz = 50;     //Number of steps it takes for ∂f/∂x to reach 1 
 const int exp_inc = 10;   //what speed value is reached after arrsz steps 
 const int minspeed = 2500; //1000; // delay, not speed
-
 int numberOfSteps = 1125; //ONLY WORKS WITH NBOFSTEPS > 1524 -> incorrect value?
 int iterations = 1;
 int maxspeed = 1000; //300;
 int motorSpeed = 0;
 
-// Motor operation arrays
+// - - - - - - - - - MOTOR OPERATION ARRAYS - - - - - - - - - 
 int Sa[arrsz];   //Array starting at low speed
 int Sb[arrsz];   //Array finishing at high speed
 int Sc[2*arrsz]; //Extended array starting at low speed
 int temp[arrsz]; //Temp array
 int time_array[6]; //tn determine the steps at which we switch between linear/exponential growth
 
-// Changed using i2c
+// - - - - - - - - - I2C COMMUNICATION - - - - - - - - - 
 bool go = false; 
 int input = false;
-  
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 void setup() 
 { 
   Serial.begin(9600);
