@@ -5,7 +5,7 @@
 
 #include <Wire.h>
 
-// - - - - - - - - - PINS - - - - - - - - - 
+// - - - - - - - - - PIN SETUP - - - - - - - - - - - - 
 const int ledPin = 13;
 
 // - - - - - - - - - SYNCHRONISATION - - - - - - - - - 
@@ -17,7 +17,7 @@ int iteration = 5; // iteration for each harmonic before synchronisation = 5
 int x = 0;
 int y = 0;
 
-// - - - - - - - - - SLAVE DATA - - - - - - - - - 
+// - - - - - - - - - SLAVE DATA - - - - - - - - - - - -
 const int slaveNum = 2; // number of slaves
 int slaveID[slaveNum] = {1,2}; // IDs of Slave Arduinos
 
@@ -66,7 +66,7 @@ void serialEvent() {
   else{
     digitalWrite(LED_BUILTIN, LOW);
   }
-  }
+}
 
 void send_data(byte data, int slave){
   Wire.beginTransmission(slave); // connect to device
