@@ -37,20 +37,23 @@ void serialEvent() {
   nbMotor = Serial.read(); // Number of terminals >> Number of motors
 
   slaveSetup();
-  randop();
 
-    for(int i = 0; i < nbMotor; i++){
-      send_data(Mot_data[i], slave_id[i]);
-      }
+  // random operation
+  randop();
+  for(int i = 0; i < nbMotor; i++){
+    send_data(Mot_data[i], slave_id[i]);
+  }
   
-    delay(5000);
-    syncop();
-    for(int i = 1; i < nbMotor; i++){
-      send_data(Mot_data[i], slave_id[i]);
-      }
+  delay(5000);
+
+  // synchronised operation
+  syncop();
+  for(int i = 1; i < nbMotor; i++){
+    send_data(Mot_data[i], slave_id[i]);
+  }
   }
 
-// Structuring and transmission of data to the slaves
+// Structuring and transmission of data to the slaves for random operation
 void randop(){
     randomSeed(analogRead(A0));
     
