@@ -31,23 +31,16 @@ byte motorData[maxSize][6] = {{0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 
 void setup() {
   // Start the I2C Bus as Master - address optional
   Wire.begin();
+  // Setup the serial terminal
   Serial.begin(9600);
-
+  // Use built in led for debugging
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
-
 }
+
+// main
 void loop() {
-  if(ready == 1){
-    for(int i = 0; i < slaveNum; i++){
-      send_data(1); // go
-    } 
-  }
-  else{ // if ready == 0
-    for(int i = 0; i < slaveNum; i++){
-      send_data(0); // stop
-    }
-  }
+  // good practice to keep this as empty as possible
 }
 
 // Serial data coming from the PC interfae currently comes in the form of a single integer
@@ -56,18 +49,29 @@ void serialEvent() {
   ready = Serial.read(); // Ready to start or not? 0 = NO, 1 = YES
   if(ready == 1){
     digitalWrite(LED_BUILTIN, HIGH);
+    random_operation();
+    for(int i = 0; i < slaveNum; i++){
+      // send respective data to each slave
+      send_data(motorData[i], slaveID[i]); // go
+    } 
+    delay(5000);
+    synchronised_operation();
+    for(int i = 0; i < slaveNum; i++){
+      // send respective data to each slave
+      send_data(motorData[i], slaveID[i]); // go
+    } 
+    // operation complete
+    digitalWrite(LED_BUILTIN, LOW)
   }
   else{
     digitalWrite(LED_BUILTIN, LOW);
   }
   }
 
-void send_data(int sendData){
-  for(int i = 0; i < slaveNum; i++){
-    Wire.beginTransmission(slaveID[i]); // connect to device
-    Wire.write(sendData); // send data
-    Wire.endTransmission(); // end transmission
-  }
+void send_data(byte data, int slave){
+  Wire.beginTransmission(slave); // connect to device
+  Wire.write(data); // send data
+  Wire.endTransmission(); // end transmission
 }
 
 // Structuring and transmission of data to the slaves for synchronised operation
