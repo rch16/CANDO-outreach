@@ -43,7 +43,7 @@ void loop() {
   // good practice to keep this as empty as possible
 }
 
-// Serial data coming from the PC interfae currently comes in the form of a single integer
+// Serial data coming from the PC interface currently comes in the form of a single integer
 // This represents the amount of terminals connected to the network
 void serialEvent() {
   ready = Serial.read(); // Ready to start or not? 0 = NO, 1 = YES
@@ -51,31 +51,33 @@ void serialEvent() {
     digitalWrite(LED_BUILTIN, HIGH);
     random_operation();
     for(int i = 0; i < slaveNum; i++){
-      // send respective data to each slave
+      // send respective motion data to each 
       send_data(motorData[i], slaveID[i]); // go
     } 
-    delay(5000);
+    /*delay(5000);
     synchronised_operation();
     for(int i = 0; i < slaveNum; i++){
       // send respective data to each slave
       send_data(motorData[i], slaveID[i]); // go
-    } 
-    // operation complete
-    digitalWrite(LED_BUILTIN, LOW)
+    }*/
   }
   else{
+    // do nothing, wait for the next time that ready = 1
     digitalWrite(LED_BUILTIN, LOW);
   }
 }
 
-void send_data(byte data, int slave){
+void send_data(byte data[], int slave){
   Wire.beginTransmission(slave); // connect to device
-  Wire.write(data); // send data
+  Wire.write(data, 6); // send data
   Wire.endTransmission(); // end transmission
 }
 
 // Structuring and transmission of data to the slaves for synchronised operation
+//The sync timing is used here to determine for how long each motor will have to move in sync with reference before motor 0 will complete 10 iterations
 void synchronised_operation(){
+  // Needs to be called after random operation
+  // Otherwise reference motor will have motion values of 0 and hence so will all the motors 
    for(int i = 1; i < slaveNum; i++){
     motorData[i][5] = 10 - motorCycle[i];
      for(int j = 0; j < 5; j++){
@@ -132,10 +134,10 @@ void random_operation(){
       case 4: // if y = 4
         x = random(0, 4);
         switch(x){
-          case 0: Mot_cycle[i] = 2; break;
-          case 1: Mot_cycle[i] = 3; break;
-          case 2: Mot_cycle[i] = 4; break;
-          case 3: Mot_cycle[i] = 5; break;
+          case 0: motorCycle[i] = 2; break;
+          case 1: motorCycle[i] = 3; break;
+          case 2: motorCycle[i] = 4; break;
+          case 3: motorCycle[i] = 5; break;
           }
         val = round((harmonicDelays[x] - 1602.5)/1.6398);
         // format val to be transmitted using bit shift 
@@ -151,11 +153,11 @@ void random_operation(){
       case 5:
         x = random(0, 5);
         switch(x){
-          case 0: Mot_cycle[i] = 2; break;
-          case 1: Mot_cycle[i] = 3; break;
-          case 2: Mot_cycle[i] = 4; break;
-          case 3: Mot_cycle[i] = 5; break;
-          case 4: Mot_cycle[i] = 6; break;
+          case 0: motorCycle[i] = 2; break;
+          case 1: motorCycle[i] = 3; break;
+          case 2: motorCycle[i] = 4; break;
+          case 3: motorCycle[i] = 5; break;
+          case 4: motorCycle[i] = 6; break;
           }
         val = round((harmonicDelays[x] - 1133.5)/2.0423);
         // format val to be transmitted using bit shift 
@@ -171,12 +173,12 @@ void random_operation(){
       case 6:
         x = random(0, 6);
         switch(x){
-          case 0: Mot_cycle[i] = 2; break;
-          case 1: Mot_cycle[i] = 3; break;
-          case 2: Mot_cycle[i] = 4; break;
-          case 3: Mot_cycle[i] = 5; break;
-          case 4: Mot_cycle[i] = 6; break;
-          case 5: Mot_cycle[i] = 7; break;
+          case 0: motorCycle[i] = 2; break;
+          case 1: motorCycle[i] = 3; break;
+          case 2: motorCycle[i] = 4; break;
+          case 3: motorCycle[i] = 5; break;
+          case 4: motorCycle[i] = 6; break;
+          case 5: motorCycle[i] = 7; break;
           }
         val = round((harmonicDelays[x] - 747.0)/2.4445);
         // format val to be transmitted using bit shift 
@@ -192,14 +194,14 @@ void random_operation(){
       case 7:
         x = random(0, 8);
         switch(x){
-          case 0: Mot_cycle[i] = 2; break;
-          case 1: Mot_cycle[i] = 3; break;
-          case 2: Mot_cycle[i] = 4; break;
-          case 3: Mot_cycle[i] = 5; break;
-          case 4: Mot_cycle[i] = 6; break;
-          case 5: Mot_cycle[i] = 7; break;
-          case 6: Mot_cycle[i] = 8; break;
-          case 7: Mot_cycle[i] = 9; break;
+          case 0: motorCycle[i] = 2; break;
+          case 1: motorCycle[i] = 3; break;
+          case 2: motorCycle[i] = 4; break;
+          case 3: motorCycle[i] = 5; break;
+          case 4: motorCycle[i] = 6; break;
+          case 5: motorCycle[i] = 7; break;
+          case 6: motorCycle[i] = 8; break;
+          case 7: motorCycle[i] = 9; break;
           }
         val = round((harmonicDelays[x] - 440.0)/2.847);
         // format val to be transmitted using bit shift 
@@ -215,16 +217,16 @@ void random_operation(){
       case 8:
         x = random(1, 9);
         switch(x){
-          case 1: Mot_cycle[i] = 3; break;
-          case 2: Mot_cycle[i] = 4; break;
-          case 3: Mot_cycle[i] = 5; break;
-          case 4: Mot_cycle[i] = 6; break;
-          case 5: Mot_cycle[i] = 7; break;
-          case 6: Mot_cycle[i] = 8; break;
-          case 7: Mot_cycle[i] = 9; break;
-          case 8: Mot_cycle[i] = 4; break;
+          case 1: motorCycle[i] = 3; break;
+          case 2: motorCycle[i] = 4; break;
+          case 3: motorCycle[i] = 5; break;
+          case 4: motorCycle[i] = 6; break;
+          case 5: motorCycle[i] = 7; break;
+          case 6: motorCycle[i] = 8; break;
+          case 7: motorCycle[i] = 9; break;
+          case 8: motorCycle[i] = 4; break;
           }
-        bigval = round((dels[x] - 213.5)/3.2493);
+        val = round((harmonicDelays[x] - 213.5)/3.2493);
         // format val to be transmitted using bit shift 
         motorData[i][0] = (val & 0x000F);
         motorData[i][1] = (val & 0x00F0) >> 4;
@@ -238,16 +240,16 @@ void random_operation(){
       case 9:
         x = random(1, 9);
         switch(x){
-          case 1: Mot_cycle[i] = 3; break;
-          case 2: Mot_cycle[i] = 4; break;
-          case 3: Mot_cycle[i] = 5; break;
-          case 4: Mot_cycle[i] = 6; break;
-          case 5: Mot_cycle[i] = 7; break;
-          case 6: Mot_cycle[i] = 8; break;
-          case 7: Mot_cycle[i] = 9; break;
-          case 8: Mot_cycle[i] = 4; break;
+          case 1: motorCycle[i] = 3; break;
+          case 2: motorCycle[i] = 4; break;
+          case 3: motorCycle[i] = 5; break;
+          case 4: motorCycle[i] = 6; break;
+          case 5: motorCycle[i] = 7; break;
+          case 6: motorCycle[i] = 8; break;
+          case 7: motorCycle[i] = 9; break;
+          case 8: motorCycle[i] = 4; break;
           }
-        bigval = round((dels[x] - 66.5)/3.6518);
+        val = round((harmonicDelays[x] - 66.5)/3.6518);
         // format val to be transmitted using bit shift 
         motorData[i][0] = (val & 0x000F);
         motorData[i][1] = (val & 0x00F0) >> 4;
@@ -258,5 +260,5 @@ void random_operation(){
         motorData[i][5] = 5;
         break;
         }
-}
+    }
 }
