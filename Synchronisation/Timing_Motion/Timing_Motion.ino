@@ -31,13 +31,13 @@ unsigned int interval;
 int numberOfSteps = 400;
 //int numberOfSteps = 800;
 //int numberOfSteps = 1200;
-int maxspeed = 300;
+//int maxspeed = 300;
 //int maxspeed = 400;
 //int maxspeed = 500;
 //int maxspeed = 600;
 //int maxspeed = 700;
 //int maxspeed = 800;
-//int maxspeed = 900;
+int maxspeed = 900;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 void setup() 
@@ -153,4 +153,3 @@ void time_array_mod(int t[]){
     Sb[i] = round(-500/(1+exp(-0.1*(160-(exponential_steps-i) - 80))) + (500+maxspeed));
     }
   }
-
