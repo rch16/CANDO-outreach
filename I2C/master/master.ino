@@ -10,7 +10,7 @@ const int ledPin = 13;
 
 // - - - - - - - - - SYNCHRONISATION - - - - - - - - - 
 // array containing the harmonics of a reference signal at 16,000ms:
-const unsigned int harmonicDelays[9] = {6400, 9600, 12800, 16000, 19200, 22400, 25600, 28800, 32000}; // assigned randomly to every motor that isn't the reference motor
+const unsigned int harmonicDelays[7] = {741,988,1235,1482,1729,1976,2223}; // assigned randomly to every motor that isn't the reference motor. n = 3 to n = 9
 unsigned int stepsNum; // found by rearranging delay equations
 unsigned int val;
 int iteration = 5; // iteration for each harmonic before synchronisation = 5 
@@ -18,12 +18,15 @@ int x = 0;
 int y = 0;
 
 // - - - - - - - - - SLAVE DATA - - - - - - - - - - - -
+// -> implement user defining slave number, then function to create an array {1,2,3,...n}, will define maxSize as well
 const int slaveNum = 2; // number of slaves
 int slaveID[slaveNum] = {1,2}; // IDs of Slave Arduinos
 
 // - - - - - - - - - MOTOR INITIATION - - - - - - - - - 
-const int maxSize = 10;
+const int maxSize = 10; // max 10 motors 
 int ready = 0; // ready to start?
+//Number of iterations done by reference when motor n will have synced up with it
+//Array containing motion profile data of each motor
 int motorCycle[maxSize] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 byte motorData[maxSize][6] = {{0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}};
 
@@ -94,7 +97,8 @@ void random_operation(){
   // such as analogRead() on the unconnected A0 pin.
   randomSeed(analogRead(A0)); 
   
-  val = round((harmonicDelays[3] - 747.0)/2.4445);
+  // Assign reference delay
+  val = round((harmonicDelays[2] - 120.67)/1.4563);
 
   // sending to motor 0 -> the reference motor
   // number of steps is sent using four bytes of data, seperated with bit shifts
@@ -108,13 +112,15 @@ void random_operation(){
 
   for(int i = 1; i < slaveNum; i++){
 
-    y = random(3, 10); // randomly assign a number between 3 & 9 inclusive
+    y = random(3, 10); // First randomly allocate a number between 3 and 9 -> translates to a maxspeed between 300 and 900
       switch(y){ // what happens if each value is selected
-
-      case 3: // if y = 3
+      // Then randomly allocate iteration delay value
+      // Note that interval varies because for example, a maxspeed of 300 cant generate a delay greater than 1731
+      // This translates to the array of a max of 1729, when n = 7
+      // - - - - - EDITED TO HERE - - - - -
+      case 3: // if max speed = 300
         x = random(0, 3); // randomly assign one of x = 0,1,2
         switch(x){ 
-          // WHAT is motorCycle[]?
           case 0: motorCycle[i] = 2; break;
           case 1: motorCycle[i] = 3; break;
           case 2: motorCycle[i] = 4; break;
