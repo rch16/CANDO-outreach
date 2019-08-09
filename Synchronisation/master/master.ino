@@ -19,11 +19,11 @@ int y = 0;
 
 // - - - - - - - - - SLAVE DATA - - - - - - - - - - - -
 // -> implement user defining slave number, then function to create an array {1,2,3,...n}, will define maxSize as well
-const int slaveNum = 2; // number of slaves
-int slaveID[slaveNum] = {1,2}; // IDs of Slave Arduinos
+const int slaveNum = 3; // number of slaves
+int slaveID[slaveNum] = {1,2,3}; // IDs of Slave Arduinos
 
 // - - - - - - - - - MOTOR INITIATION - - - - - - - - - 
-const int maxSize = 10; // max 10 motors 
+const int maxSize = 10; // currently limits code to max 10 motors 
 int ready = 0; // ready to start?
 //Number of iterations done by reference when motor n will have synced up with it
 //Array containing motion profile data of each motor
@@ -57,12 +57,12 @@ void serialEvent() {
       // send respective motion data to each 
       send_data(motorData[i], slaveID[i]); // go
     } 
-    /*delay(5000);
+    delay(5000);
     synchronised_operation();
     for(int i = 0; i < slaveNum; i++){
       // send respective data to each slave
       send_data(motorData[i], slaveID[i]); // go
-    }*/
+    }
   }
   else{
     // do nothing, wait for the next time that ready = 1
