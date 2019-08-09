@@ -19,12 +19,12 @@ int y = 0;
 
 // - - - - - - - - - SLAVE DATA - - - - - - - - - - - -
 // -> implement user defining slave number, then function to create an array {1,2,3,...n}, will define maxSize as well
-const int slaveNum = 3; // number of slaves
-int slaveID[slaveNum] = {1,2,3}; // IDs of Slave Arduinos
+const int slaveNum = 3; // default number of slaves
+int slaveID[slaveNum] = {1,2,3}; // default IDs of Slave Arduinos
 
 // - - - - - - - - - MOTOR INITIATION - - - - - - - - - 
 const int maxSize = 10; // currently limits code to max 10 motors 
-int ready = 0; // ready to start?
+int input = 0; // ready to start?
 //Number of iterations done by reference when motor n will have synced up with it
 //Array containing motion profile data of each motor
 int motorCycle[maxSize] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -32,12 +32,9 @@ byte motorData[maxSize][6] = {{0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 void setup() {
-  // Start the I2C Bus as Master - address optional
-  Wire.begin();
-  // Setup the serial terminal
-  Serial.begin(9600);
-  // Use built in led for debugging
-  pinMode(LED_BUILTIN, OUTPUT);
+  Wire.begin(); // Start the I2C Bus as Master - address optional for master arduino
+  Serial.begin(9600); // Setup the serial terminal
+  pinMode(LED_BUILTIN, OUTPUT); // Use built in led for debugging
   digitalWrite(LED_BUILTIN, LOW);
 }
 
@@ -49,8 +46,12 @@ void loop() {
 // Serial data coming from the PC interface currently comes in the form of a single integer
 // This represents the amount of terminals connected to the network
 void serialEvent() {
-  ready = Serial.read(); // Ready to start or not? 0 = NO, 1 = YES
-  if(ready == 1){
+  input = Serial.read(); // Ready to start or not? 0 = NO, 1 = YE
+  if(input == 0){
+    // do nothing, wait for the next time that input = 1 or slave num changed
+    digitalWrite(LED_BUILTIN, LOW);
+  }
+  else if(input == 1){
     digitalWrite(LED_BUILTIN, HIGH);
     random_operation();
     for(int i = 0; i < slaveNum; i++){
@@ -63,10 +64,16 @@ void serialEvent() {
       // send respective data to each slave
       send_data(motorData[i], slaveID[i]); // go
     }
-  }
   else{
-    // do nothing, wait for the next time that ready = 1
-    digitalWrite(LED_BUILTIN, LOW);
+    slaveNum = input;
+    slave_array();
+  }
+}
+
+void slave_array(){
+  slaveNum.clear();
+  for(int i = 0; i < slaveNum + 1; i++){
+    slaveNum.append(i + 1);
   }
 }
 
