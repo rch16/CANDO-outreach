@@ -107,7 +107,7 @@ void random_operation(){
   motorData[0][2] = (val & 0x0F00) >> 8;
   motorData[0][3] = (val & 0xF000) >> 12;
   motorData[0][4] = 50; // chosen 500 as reference max speed
-  motorData[0][5] = 10;
+  motorData[0][5] = 10; // iterations
   // motorData[i][6] is the 6 byte data sent to motor i 
 
   for(int i = 1; i < slaveNum; i++){
@@ -132,78 +132,18 @@ void random_operation(){
 
         val = round((harmonicDelays[x] - 107.67)/1.32);
         // format val to be transmitted using bit shift 
+        // number of steps, bitshifted:
         motorData[i][0] = (val & 0x000F);
         motorData[i][1] = (val & 0x00F0) >> 4;
         motorData[i][2] = (val & 0x0F00) >> 8;
         motorData[i][3] = (val & 0xF000) >> 12;
-
-        motorData[i][4] = y*10;
-        motorData[i][5] = 5;
+        motorData[i][4] = y*10; // max speed
+        motorData[i][5] = 5; // 5 iterations
         break;
       
-      case 4: // if y = 4
-        x = random(0, 4);
-        switch(x){
-          case 0: motorCycle[i] = 2; break;
-          case 1: motorCycle[i] = 3; break;
-          case 2: motorCycle[i] = 4; break;
-          case 3: motorCycle[i] = 5; break;
-          }
-        val = round((harmonicDelays[x] - 1602.5)/1.6398);
-        // format val to be transmitted using bit shift 
-        motorData[i][0] = (val & 0x000F);
-        motorData[i][1] = (val & 0x00F0) >> 4;
-        motorData[i][2] = (val & 0x0F00) >> 8;
-        motorData[i][3] = (val & 0xF000) >> 12;
-        // what is bytes 4 & 5?
-        motorData[i][4] = y*10;
-        motorData[i][5] = 5;
-        break;
-      
-      case 5:
-        x = random(0, 5);
-        switch(x){
-          case 0: motorCycle[i] = 2; break;
-          case 1: motorCycle[i] = 3; break;
-          case 2: motorCycle[i] = 4; break;
-          case 3: motorCycle[i] = 5; break;
-          case 4: motorCycle[i] = 6; break;
-          }
-        val = round((harmonicDelays[x] - 1133.5)/2.0423);
-        // format val to be transmitted using bit shift 
-        motorData[i][0] = (val & 0x000F);
-        motorData[i][1] = (val & 0x00F0) >> 4;
-        motorData[i][2] = (val & 0x0F00) >> 8;
-        motorData[i][3] = (val & 0xF000) >> 12;
-        // what is bytes 4 & 5?
-        motorData[i][4] = y*10;
-        motorData[i][5] = 5;
-        break;
-      
-      case 6:
-        x = random(0, 6);
-        switch(x){
-          case 0: motorCycle[i] = 2; break;
-          case 1: motorCycle[i] = 3; break;
-          case 2: motorCycle[i] = 4; break;
-          case 3: motorCycle[i] = 5; break;
-          case 4: motorCycle[i] = 6; break;
-          case 5: motorCycle[i] = 7; break;
-          }
-        val = round((harmonicDelays[x] - 747.0)/2.4445);
-        // format val to be transmitted using bit shift 
-        motorData[i][0] = (val & 0x000F);
-        motorData[i][1] = (val & 0x00F0) >> 4;
-        motorData[i][2] = (val & 0x0F00) >> 8;
-        motorData[i][3] = (val & 0xF000) >> 12;
-        // what is bytes 4 & 5?
-        motorData[i][4] = y*10;
-        motorData[i][5] = 5;
-        break;
-      
-      case 7:
+      case 4: // if max speed = 400
         x = random(0, 8);
-        switch(x){
+        switch(x){ 
           case 0: motorCycle[i] = 2; break;
           case 1: motorCycle[i] = 3; break;
           case 2: motorCycle[i] = 4; break;
@@ -213,18 +153,105 @@ void random_operation(){
           case 6: motorCycle[i] = 8; break;
           case 7: motorCycle[i] = 9; break;
           }
-        val = round((harmonicDelays[x] - 440.0)/2.847);
-        // format val to be transmitted using bit shift 
+        val = round((harmonicDelays[x] - 119.67)/1.3763);
+        // number of steps: 
         motorData[i][0] = (val & 0x000F);
         motorData[i][1] = (val & 0x00F0) >> 4;
         motorData[i][2] = (val & 0x0F00) >> 8;
         motorData[i][3] = (val & 0xF000) >> 12;
-        // what is bytes 4 & 5?
-        motorData[i][4] = y*10;
-        motorData[i][5] = 5;
+        motorData[i][4] = y*10; // max speed
+        motorData[i][5] = 5; // iterations
         break;
       
-      case 8:
+      case 5: // if max speed = 500
+        x = random(0, 8);
+        switch(x){ 
+          case 0: motorCycle[i] = 2; break;
+          case 1: motorCycle[i] = 3; break;
+          case 2: motorCycle[i] = 4; break;
+          case 3: motorCycle[i] = 5; break;
+          case 4: motorCycle[i] = 6; break;
+          case 5: motorCycle[i] = 7; break;
+          case 6: motorCycle[i] = 8; break;
+          case 7: motorCycle[i] = 9; break;
+          }
+        val = round((harmonicDelays[x] - 137.33)/1.3963);
+        // number of steps:
+        motorData[i][0] = (val & 0x000F);
+        motorData[i][1] = (val & 0x00F0) >> 4;
+        motorData[i][2] = (val & 0x0F00) >> 8;
+        motorData[i][3] = (val & 0xF000) >> 12;
+        motorData[i][4] = y*10; // max speed
+        motorData[i][5] = 5; // iterations
+        break;
+      
+      case 6: // if max speed = 600
+        x = random(0, 8);
+        switch(x){ 
+          case 0: motorCycle[i] = 2; break;
+          case 1: motorCycle[i] = 3; break;
+          case 2: motorCycle[i] = 4; break;
+          case 3: motorCycle[i] = 5; break;
+          case 4: motorCycle[i] = 6; break;
+          case 5: motorCycle[i] = 7; break;
+          case 6: motorCycle[i] = 8; break;
+          case 7: motorCycle[i] = 9; break;
+          }
+        val = round((harmonicDelays[x] - 120.67)/1.4563);
+        // number of steps:
+        motorData[i][0] = (val & 0x000F);
+        motorData[i][1] = (val & 0x00F0) >> 4;
+        motorData[i][2] = (val & 0x0F00) >> 8;
+        motorData[i][3] = (val & 0xF000) >> 12;
+        motorData[i][4] = y*10; // max speed
+        motorData[i][5] = 5; // iterations
+        break;
+      
+      case 7: // if max speed = 700
+        x = random(0, 8);
+        switch(x){ 
+          case 0: motorCycle[i] = 2; break;
+          case 1: motorCycle[i] = 3; break;
+          case 2: motorCycle[i] = 4; break;
+          case 3: motorCycle[i] = 5; break;
+          case 4: motorCycle[i] = 6; break;
+          case 5: motorCycle[i] = 7; break;
+          case 6: motorCycle[i] = 8; break;
+          case 7: motorCycle[i] = 9; break;
+          }
+        val = round((harmonicDelays[x] - 403.67)/1.5325);
+        // number of steps:
+        motorData[i][0] = (val & 0x000F);
+        motorData[i][1] = (val & 0x00F0) >> 4;
+        motorData[i][2] = (val & 0x0F00) >> 8;
+        motorData[i][3] = (val & 0xF000) >> 12;
+        motorData[i][4] = y*10; // max speed
+        motorData[i][5] = 5; // iterations
+        break;
+      
+      case 8: // if max speed = 800
+        x = random(1, 9); // minimum speed higher than case 0 option
+        switch(x){
+          case 1: motorCycle[i] = 3; break;
+          case 2: motorCycle[i] = 4; break;
+          case 3: motorCycle[i] = 5; break;
+          case 4: motorCycle[i] = 6; break;
+          case 5: motorCycle[i] = 7; break;
+          case 6: motorCycle[i] = 8; break;
+          case 7: motorCycle[i] = 9; break;
+          case 8: motorCycle[i] = 4; break;
+          }
+        val = round((harmonicDelays[x] - 94.0)/1.6363);
+        // number of steps:
+        motorData[i][0] = (val & 0x000F);
+        motorData[i][1] = (val & 0x00F0) >> 4;
+        motorData[i][2] = (val & 0x0F00) >> 8;
+        motorData[i][3] = (val & 0xF000) >> 12;
+        motorData[i][4] = y*10; // max speed
+        motorData[i][5] = 5; // iterations
+        break;
+      
+      case 9: // if max speed = 900
         x = random(1, 9);
         switch(x){
           case 1: motorCycle[i] = 3; break;
@@ -236,38 +263,14 @@ void random_operation(){
           case 7: motorCycle[i] = 9; break;
           case 8: motorCycle[i] = 4; break;
           }
-        val = round((harmonicDelays[x] - 213.5)/3.2493);
-        // format val to be transmitted using bit shift 
+        val = round((harmonicDelays[x] - 34.0)/1.825);
+        // number of steps:
         motorData[i][0] = (val & 0x000F);
         motorData[i][1] = (val & 0x00F0) >> 4;
         motorData[i][2] = (val & 0x0F00) >> 8;
         motorData[i][3] = (val & 0xF000) >> 12;
-        // what is bytes 4 & 5?
-        motorData[i][4] = y*10;
-        motorData[i][5] = 5;
-        break;
-      
-      case 9:
-        x = random(1, 9);
-        switch(x){
-          case 1: motorCycle[i] = 3; break;
-          case 2: motorCycle[i] = 4; break;
-          case 3: motorCycle[i] = 5; break;
-          case 4: motorCycle[i] = 6; break;
-          case 5: motorCycle[i] = 7; break;
-          case 6: motorCycle[i] = 8; break;
-          case 7: motorCycle[i] = 9; break;
-          case 8: motorCycle[i] = 4; break;
-          }
-        val = round((harmonicDelays[x] - 66.5)/3.6518);
-        // format val to be transmitted using bit shift 
-        motorData[i][0] = (val & 0x000F);
-        motorData[i][1] = (val & 0x00F0) >> 4;
-        motorData[i][2] = (val & 0x0F00) >> 8;
-        motorData[i][3] = (val & 0xF000) >> 12;
-        // what is bytes 4 & 5?
-        motorData[i][4] = y*10;
-        motorData[i][5] = 5;
+        motorData[i][4] = y*10; // max speed
+        motorData[i][5] = 5; // iterations
         break;
         }
     }
