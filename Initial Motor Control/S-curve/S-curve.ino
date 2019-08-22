@@ -1,7 +1,4 @@
 // Revision control 
-// i2c -> sooner rather than later
-#include <Wire.h>
-
 byte directionPin = 9;
 byte stepPin = 8;
 int numberOfSteps = 1125; //ONLY WORKS WITH NBOFSTEPS > 1524
